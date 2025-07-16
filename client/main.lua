@@ -339,3 +339,10 @@ end)
 
 exports('useClosestDoor', useClosestDoor)
 exports('getClosestDoor', function() return ClosestDoor end)
+
+RegisterNetEvent('ox_doorlock:alarmDisabled', function(id)
+	local door = doors[id]
+	if door then
+		door.alarmEnabled = false
+	end
+end)

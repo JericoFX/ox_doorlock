@@ -22,6 +22,9 @@ export interface StoreState {
   hideUi: boolean | null;
   doors: boolean | null;
   holdOpen: boolean | null;
+  keyItem: StringField;
+  alarmEnabled: boolean | null;
+  hackDifficulty: Array<string | { areaSize: number; speedMultiplier: number }>;
 }
 
 interface StateSetters {
@@ -36,9 +39,11 @@ interface StateSetters {
   setCharacters: (fn: (state: StoreState['characters']) => StoreState['characters']) => void;
   setGroups: (fn: (state: StoreState['groups']) => StoreState['groups']) => void;
   setLockpickDifficulty: (fn: (state: StoreState['lockpickDifficulty']) => StoreState['lockpickDifficulty']) => void;
-  toggleCheckbox: (type: 'state' | 'doors' | 'auto' | 'lockpick' | 'hideUi' | 'holdOpen') => void;
+  toggleCheckbox: (type: 'state' | 'doors' | 'auto' | 'lockpick' | 'hideUi' | 'holdOpen' | 'alarmEnabled') => void;
   setMaxDistance: (value: StoreState['maxDistance']) => void;
   setDoorRate: (value: StoreState['doorRate']) => void;
+  setKeyItem: (value: StoreState['keyItem']) => void;
+  setHackDifficulty: (fn: (state: StoreState['hackDifficulty']) => StoreState['hackDifficulty']) => void;
 }
 
 export const useStore = create<StoreState>(() => ({
@@ -59,6 +64,9 @@ export const useStore = create<StoreState>(() => ({
   hideUi: false,
   doors: false,
   holdOpen: false,
+  keyItem: '',
+  alarmEnabled: false,
+  hackDifficulty: [''],
 }));
 
 export const defaultState = useStore.getState();
@@ -90,4 +98,9 @@ export const useSetters = create<StateSetters>((set: SetState<StateSetters>, get
       lockpickDifficulty: fn(difficultyFields),
     })),
   setDoorRate: (value: StoreState['doorRate']) => useStore.setState({ doorRate: value }),
+  setKeyItem: (value: StoreState['keyItem']) => useStore.setState({ keyItem: value }),
+  setHackDifficulty: (fn) =>
+    useStore.setState(({ hackDifficulty: difficultyFields }) => ({
+      hackDifficulty: fn(difficultyFields),
+    })),
 }));

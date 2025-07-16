@@ -12,5 +12,11 @@
   "remove_lock": "Borrar cerradura",
   "cannot_unlock": "No se puede abrir la cerradura",
   "cannot_lock": "No se puede cerrar la cerradura",
-  "create_modify_lock": "Crear una cerradura o modificar una existente"
+  "create_modify_lock": "Crear una cerradura o modificar una existente",
+  "add_door_textui": "**Crear nueva puerta**  \nInteractuar con [LMB]  \nCancelar con [RMB]",
+  "command_closest": "Abrir UI directamente a la cerradura más cercana",
+  "hack_alarm": "Hackear alarma",
+  "alarm_disabled": "La alarma ha sido desactivada",
+  "hack_failed": "Hackeo falló",
+  "door_unlocked": "Puerta desbloqueada exitosamente"
 }

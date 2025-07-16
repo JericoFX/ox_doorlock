@@ -20,6 +20,33 @@ Successor to nui_doorlock with less scuff and more stuff.
 
 _The UI needs to be built - use the [latest release](https://github.com/TheOrderFivem/ox_doorlock/releases/latest/download/ox_doorlock.zip) if you want to drag-n-drop._
 
+## Features
+
+### Core Functionality
+- Door management with state persistence
+- Support for single and double doors
+- Authorization via characters, groups, items, and key items
+- Password-protected doors
+- Automatic door locking with configurable timers
+- Lockpicking system with configurable difficulty
+- Alarm system with hacking minigames
+- Sound customization for lock/unlock events
+- Distance-based interaction
+- Administrative controls
+
+### Security System
+- **Key Items**: Specific items that can open doors without removing them from inventory
+- **Alarm System**: Configurable alarm that can be hacked using ox_lib skill checks
+- **Hack Difficulty**: Customizable minigame difficulty for alarm hacking
+- **Lockpicking**: Traditional lockpicking with breakable tools
+
+### User Interface
+- Modern web-based configuration interface
+- Real-time door creation and editing
+- Visual feedback for door states
+- Organized settings tabs for easy management
+- Security tab for alarm and key item configuration
+
 ## Dependencies
 
 ### [oxmysql](https://github.com/communityox/oxmysql)
@@ -33,8 +60,8 @@ mysql-async is no longer supported.
 
 ### [ox_lib](https://github.com/communityox/ox_lib) (v2.3.0 or higher)
 
-Used for some UI elements (i.e. notifications, progress circle, input), and cache.
+Used for some UI elements (i.e. notifications, progress circle, input), cache, and skill check minigames.
 
 ### [ox_target](https://github.com/TheOrderFivem/ox_target) (preferred) or [qb-target](https://github.com/qbcore-framework/qb-target) or [qtarget](https://github.com/overextended/qtarget) (deprecated)
 
-(Optional) Used for lockpicking.
+(Optional) Used for lockpicking and alarm hacking.

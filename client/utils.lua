@@ -37,6 +37,14 @@ local function canPickLock(entity)
 	return door and door.lockpick and (Config.CanPickUnlockedDoors or door.state == 1)
 end
 
+local function canHackAlarm(entity)
+	if PickingLock then return false end
+
+	local door = getDoorFromEntity(entity)
+
+	return door and door.alarmEnabled and door.state == 1
+end
+
 ---@param entity number
 local function pickLock(entity)
 	local door = getDoorFromEntity(entity)
@@ -74,6 +82,45 @@ exports('pickClosestDoor', function()
 	if not ClosestDoor then return end
 
 	pickLock(ClosestDoor.entity)
+end)
+
+---@param entity number
+local function hackAlarm(entity)
+	local door = getDoorFromEntity(entity)
+
+	if not door or PickingLock or not door.alarmEnabled or door.state == 0 then return end
+
+	PickingLock = true
+
+	TaskTurnPedToFaceCoord(cache.ped, door.coords.x, door.coords.y, door.coords.z, 4000)
+	Wait(500)
+
+	local animDict = lib.requestAnimDict('amb@world_human_clipboard@male@idle_a')
+	TaskPlayAnim(cache.ped, animDict, 'idle_a', 3.0, 1.0, -1, 49, 0, true, true, true)
+
+	local success = lib.skillCheck(door.hackDifficulty or Config.HackDifficulty)
+
+	if success then
+		lib.notify({ type = 'success', description = locale('alarm_disabled') })
+		TriggerServerEvent('ox_doorlock:disableAlarm', door.id)
+		-- Automatically unlock the door after successful hack
+		TriggerServerEvent('ox_doorlock:setState', door.id, 0)
+		Wait(500) -- Small delay between notifications
+		lib.notify({ type = 'success', description = locale('door_unlocked') })
+	else
+		lib.notify({ type = 'error', description = locale('hack_failed') })
+	end
+
+	StopEntityAnim(cache.ped, 'idle_a', animDict, 0)
+	RemoveAnimDict(animDict)
+
+	PickingLock = false
+end
+
+exports('hackClosestDoorAlarm', function()
+	if not ClosestDoor then return end
+
+	hackAlarm(ClosestDoor.entity)
 end)
 
 local tempData = {}
@@ -120,6 +167,10 @@ RegisterNUICallback('createDoor', function(data, cb)
 
 	if data.lockpickDifficulty and not next(data.lockpickDifficulty) then
 		data.lockpickDifficulty = nil
+	end
+
+	if data.hackDifficulty and not next(data.hackDifficulty) then
+		data.hackDifficulty = nil
 	end
 
 	if data.groups and not next(data.groups) then
@@ -290,6 +341,14 @@ CreateThread(function()
 				canInteract = canPickLock,
 				items = Config.LockpickItems,
 				anyItem = true,
+				distance = 1
+			},
+			{
+				name = 'hackAlarm',
+				label = locale('hack_alarm'),
+				icon = 'fas fa-shield-alt',
+				onSelect = hackAlarm,
+				canInteract = canHackAlarm,
 				distance = 1
 			}
 		})

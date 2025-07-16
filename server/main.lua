@@ -46,7 +46,10 @@ local function encodeData(door)
 		state = door.state,
 		unlockSound = door.unlockSound,
 		passcode = door.passcode,
-		lockpickDifficulty = door.lockpickDifficulty
+		lockpickDifficulty = door.lockpickDifficulty,
+		keyItem = door.keyItem,
+		alarmEnabled = door.alarmEnabled,
+		hackDifficulty = door.hackDifficulty
 	})
 end
 
@@ -229,6 +232,13 @@ local function isAuthorised(playerId, door, lockpick)
 			authorised = DoesPlayerHaveItem(player, door.items) or nil
 		end
 
+		if not authorised and door.keyItem then
+			local keyData = ox_inventory:Search(playerId, 'slots', door.keyItem)[1]
+			if keyData and keyData.count > 0 then
+				authorised = true
+			end
+		end
+
 		if authorised ~= nil and door.passcode then
 			authorised = door.passcode == lib.callback.await('ox_doorlock:inputPassCode', playerId)
 		end
@@ -343,6 +353,14 @@ end)
 RegisterNetEvent('ox_doorlock:breakLockpick', function()
 	local player = GetPlayer(source)
 	return player and DoesPlayerHaveItem(player, Config.LockpickItems, true)
+end)
+
+RegisterNetEvent('ox_doorlock:disableAlarm', function(id)
+	local door = doors[id]
+	if door and door.alarmEnabled then
+		door.alarmEnabled = false
+		TriggerClientEvent('ox_doorlock:alarmDisabled', -1, id)
+	end
 end)
 
 lib.addCommand('doorlock', {
